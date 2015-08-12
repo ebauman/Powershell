@@ -1,0 +1,4 @@
+IPAddress,ClientName,MACAddress,User,PrinterLocation,Default
+,,,baumae03,\\print\GCCDirector,True
+,,AC:87:A3:1E:66:8F,,\\print\GCCDesk,False
+,,,,\\print\GCCDirector,False
