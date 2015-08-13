@@ -1,4 +1,5 @@
 IPAddress,ClientName,MACAddress,User,PrinterLocation,Default
-,,,baumae03,\\print\GCCDirector,True
-,,AC:87:A3:1E:66:8F,,\\print\GCCDesk,False
-,,,,\\print\GCCDirector,False
+192.168.1.1,,,,\\printserver\Printer1,True
+,machine-name,,,\\printserver\Printer2,False
+,,00:50:56:01:02:03,,\\printserver\Printer3,True
+,,,smithbob01,\\printserver\Printer4,False
