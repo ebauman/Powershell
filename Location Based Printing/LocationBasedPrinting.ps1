@@ -23,7 +23,7 @@
 #####
 
 # CSV File Location
-$csvLocation = ".\lbpmapping.csv"
+$csvLocation = ".\lbmapping.csv"
 
 
 
