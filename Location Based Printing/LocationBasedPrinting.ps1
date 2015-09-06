@@ -55,10 +55,50 @@ $UserNamePrinters = $csv | Where-Object { $_.User -match $volatileObject.ViewCli
 
 # Add the matched printers to the main printer list, if the match does not return null.
 # This is required because the ArrayList.Add() method will add a $null if there's no match
-If ($IPPrinters -ne $null) { $printers.AddRange($IPPrinters) }
-If ($ClientNamePrinters -ne $null) { $printers.AddRange($ClientNamePrinters) }
-If ($MACAddressPrinters -ne $null) { $printers.AddRange($MACAddressPrinters) }
-If ($UserNamePrinters -ne $null) { $printers.AddRange($UserNamePrinters) }
+If ($IPPrinters -ne $null) 
+{
+    If ($IPPrinters -is [System.Array]) 
+    {
+        $printers.AddRange($IPPrinters) 
+    }
+    else
+    {
+        $printers.Add($IPPrinters)
+    }
+}
+If ($ClientNamePrinters -ne $null) 
+{ 
+    If ($ClientNamePrinters -is [System.Array])
+    {
+        $printers.AddRange($ClientNamePrinters) 
+    }
+    else
+    {
+        $printers.Add($ClientNamePrinters)
+    }
+}
+If ($MACAddressPrinters -ne $null) 
+{
+    If ($MACAddressPrinters -is [System.Array])
+    { 
+        $printers.AddRange($MACAddressPrinters) 
+    }
+    else
+    {
+        $printers.Add($MACAddressPrinters)
+    }
+}
+If ($UserNamePrinters -ne $null)
+{ 
+    If ($UserNamePrinters -is [System.Array])
+    {
+        $printers.AddRange($UserNamePrinters) 
+    }
+    else
+    {
+        $printers.Add($UserNamePrinters)
+    }
+}
 
 # Loop over the printers
 Foreach ($printer in $printers) 
