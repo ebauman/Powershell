@@ -22,17 +22,41 @@
 # CONFIGURATION ITEMS
 #####
 
+<#
+.DESCRIPTION
+    This function gets the current user's username and looks them up
+    in Active Directory to get a String array of all the group names
+    they belong to.
+.AUTHOR
+    Sam Weinkauf
+#>
+function GetGroups
+{
+    <# Get Enviroment Inforamtion #>
+    $volatileObject = Get-ItemProperty -Path "HKCU:\Volatile Environment"
+
+    <# Pull Username from enviroment info #>
+    [string]$U = $volatileObject.USERNAME
+    
+    <# Populate Group List #>
+    $UN = Get-ADUser $U -Properties MemberOf
+    $Groups = ForEach ($Group in ($UN.MemberOf))
+    {   (Get-ADGroup $Group).Name
+    }
+    $Groups = $Groups | Sort
+    return $Groups
+}
+
+
 # CSV File Location
 $csvLocation = ".\lbmapping.csv"
-
-
-
-
-
 
 #####
 # CODE
 #####
+
+#Import active-directory module
+Import-Module ActiveDirectory
 
 # Grab a listing of registry items from HKCU:\Volatile Environmnet
 $volatileObject = Get-ItemProperty -Path "HKCU:\Volatile Environment"
@@ -52,6 +76,14 @@ $ClientNamePrinters = $csv | Where-Object { $_.ClientName -match $volatileObject
 $MACAddressPrinters = $csv | Where-Object { $_.MACAddress -match $volatileObject.ViewClient_MAC_Address }
 # Get all printers that are matched by username
 $UserNamePrinters = $csv | Where-Object { $_.User -match $volatileObject.ViewClient_Broker_UserName }
+# Get all printers that are matched by group
+$UserGroups = GetGroups
+[System.Collections.ArrayList]$GroupPrinters = @()
+foreach($group in $UserGroups)
+{
+    $temp = $csv | Where-Object { $_.Group -match $group }
+    $SelectPrinter = $GroupPrinters.add($temp)
+}
 
 # Add the matched printers to the main printer list, if the match does not return null.
 # This is required because the ArrayList.Add() method will add a $null if there's no match
@@ -97,6 +129,17 @@ If ($UserNamePrinters -ne $null)
     else
     {
         $printers.Add($UserNamePrinters)
+    }
+}
+If ($GroupPrinters -ne $null)
+{
+    If ($GroupPrinters -is [System.Array])
+    {
+        $printers.AddRange($GroupPrinters)
+    }
+    else
+    {
+        $printers.Add($GroupPrinters)
     }
 }
 
